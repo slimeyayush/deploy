@@ -1,0 +1,47 @@
+def toggle_binary(binary):
+    return ''.join(['1' if bit == '0' else '0' for bit in binary])
+
+def play_game(arr, rahul_AB, rupesh_AB, k):
+    rahul_sum = 0
+    rupesh_sum = 0
+
+    while arr:
+        max_index = arr.index(max(arr[max(0, max_index - k):min(len(arr), max_index + k + 1)]))
+        selected_values = arr[max(0, max_index - k):min(len(arr), max_index + k + 1)]
+        del arr[max(0, max_index - k):min(len(arr), max_index + k + 1)]
+
+        if arr:
+            if arr[max_index - max(0, max_index - k)] > arr[max_index - max(0, max_index - k) + 1]:
+                arr[max_index - max(0, max_index - k)] = max(arr[max_index - max(0, max_index - k)], arr.pop(max_index - max(0, max_index - k) + 1))
+            else:
+                arr[max_index - max(0, max_index - k) + 1] = max(arr[max_index - max(0, max_index - k)], arr.pop(max_index - max(0, max_index - k)))
+
+        if arr:
+            if max_index < len(arr):
+                arr[max_index] = max(selected_values)
+            else:
+                arr[-1] = max(selected_values)
+        
+        if arr:
+            rahul_sum += sum(selected_values) if (rahul_sum + sum(selected_values)) % 2 == 0 else 0
+            rupesh_sum += sum(selected_values) if (rupesh_sum + sum(selected_values)) % 2 == 1 else 0
+
+    rahul_AB = toggle_binary(rahul_AB)
+    rupesh_AB = toggle_binary(rupesh_AB)
+
+    if rahul_sum > rupesh_sum:
+        return "Rahul"
+    elif rahul_sum < rupesh_sum:
+        return "Rupesh"
+    else:
+        return "Both"
+
+# Input reading
+arr = list(map(int, input().split()))
+rahul_AB = input().split()
+rupesh_AB = input().split()
+k = int(input())
+
+# Call the function and print the result
+result = play_game(arr, rahul_AB[0], rupesh_AB[0], k)
+print(result)
